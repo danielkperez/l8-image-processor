@@ -80,10 +80,11 @@ class ImportImages extends Command
         $this->bar = $this->output->createProgressBar($urls->count());
 
         foreach ($urls as $url) {
-            if (! empty($url)) {
-                $nameParts = explode("/", $url);
-                $name = end($nameParts);
+            $nameParts = explode("/", $url);
+            $name = end($nameParts);
+            $exists = $this->seller->media()->where('file_name', $name)->exists();
 
+            if (! empty($url) && ! $exists) {
                 try {
                     $httpResponse = Http::get($url);
                     $responseBody = $httpResponse->body();
