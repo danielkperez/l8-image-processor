@@ -19,9 +19,12 @@ class Seller extends Model implements HasMedia
 
     public function registerMediaConversions(Media $media = null): void
     {
-        $this->addMediaConversion('thumb')
-              ->width(368)
-              ->height(232)
-              ->sharpen(10);
+        $this->addMediaConversion('large')
+            ->width(1920)
+            ->height(1080);
+
+        $this->addMediaConversion('medium')
+            ->width(1280)
+            ->height(720);
     }
 }

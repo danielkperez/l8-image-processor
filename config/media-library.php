@@ -12,7 +12,7 @@ return [
      * The maximum file size of an item in bytes.
      * Adding a larger file will result in an exception.
      */
-    'max_file_size' => 1024 * 1024 * 10,
+    'max_file_size' => 1024 * 1024 * 200,
 
     /*
      * This queue will be used to generate derived and responsive images.
@@ -42,22 +42,24 @@ return [
      * in the same session. You can opt to disable this for stateless usage of
      * the pro components.
      */
-    'enable_temporary_uploads_session_affinity' => true,
+    'enable_temporary_uploads_session_affinity' => false,
 
     /*
      * When enabled, Media Library pro will generate thumbnails for uploaded file.
      */
-    'generate_thumbnails_for_temporary_uploads' => true,
+    'generate_thumbnails_for_temporary_uploads' => false,
 
     /*
      * This is the class that is responsible for naming generated files.
      */
-    'file_namer' => Spatie\MediaLibrary\Support\FileNamer\DefaultFileNamer::class,
+    // 'file_namer' => Spatie\MediaLibrary\Support\FileNamer\DefaultFileNamer::class,
+    'file_namer' => App\MediaLibrary\Support\FileNamer\SimpleFileNamer::class,
 
     /*
      * The class that contains the strategy for determining a media file's path.
      */
-    'path_generator' => Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator::class,
+    // 'path_generator' => Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator::class,
+    'path_generator' => App\MediaLibrary\Support\PathGenerator\FlatStructurePathGenerator::class,
 
     /*
      * When urls to files get generated, this class will be called. Use the default
@@ -148,7 +150,7 @@ return [
      */
     'jobs' => [
         'perform_conversions' => Spatie\MediaLibrary\Conversions\Jobs\PerformConversionsJob::class,
-        'generate_responsive_images' => Spatie\MediaLibrary\ResponsiveImages\Jobs\GenerateResponsiveImagesJob::class,
+        // 'generate_responsive_images' => Spatie\MediaLibrary\ResponsiveImages\Jobs\GenerateResponsiveImagesJob::class,
     ],
 
     /*

@@ -6,7 +6,8 @@ use App\Models\Seller;
 use League\Csv\Reader;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\{Http, Storage};
+use Illuminate\Http\File;
 
 class ImportImages extends Command
 {
@@ -68,7 +69,6 @@ class ImportImages extends Command
             $this->fetchImagesFromUrls($urls);
         }
 
-
         return 0;
     }
 
@@ -79,20 +79,29 @@ class ImportImages extends Command
 
         $this->bar = $this->output->createProgressBar($urls->count());
 
-        $urls->each(function ($url) use ($good, $bad) {
-            try {
-                $good = $this->seller
-                    ->addMediaFromUrl($url)
-                    ->withResponsiveImages()
-                    ->toMediaCollection('bulk-upload-images');
+        foreach ($urls as $url) {
+            if (! empty($url)) {
+                $nameParts = explode("/", $url);
+                $name = end($nameParts);
 
-            } catch (\Exception $e) {
-                // $this->error(sprintf('Unable to fetch image %s', $url));
-                $bad[] = $url;
+                try {
+                    $httpResponse = Http::get($url);
+                    $responseBody = $httpResponse->body();
+
+                    $good[] = $this->seller
+                        ->addMediaFromString($responseBody)
+                        ->usingFileName($name)
+                        ->toMediaCollection('bulk-upload-images');
+                } catch (\Exception $e) {
+                    $this->error($e->getMessage());
+                    // $this->error(sprintf('Unable to fetch image %s', $url));
+                    $bad[] = $url;
+                }
             }
 
             $this->bar->advance();
-        });
+        }
+
 
         $this->bar->finish();
 
